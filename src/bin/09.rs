@@ -79,8 +79,6 @@ impl Game {
 pub fn part_one(input: &str) -> Option<u32> {
     let (player_count, last_marble) = parse_input(input);
 
-    println!("{player_count} {last_marble}");
-
     let mut game = Game::new_game(player_count, last_marble);
 
     while game.add_marble() {
@@ -94,8 +92,6 @@ pub fn part_one(input: &str) -> Option<u32> {
 pub fn part_two(input: &str) -> Option<u32> {
     let (player_count, last_marble) = parse_input(input);
     let last_marble = last_marble * 100;
-
-    println!("{player_count} {last_marble}");
 
     let mut game = Game::new_game(player_count, last_marble);
 
