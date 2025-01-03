@@ -1,4 +1,4 @@
-use hashbrown::HashMap;
+use advent_of_code::check_for_repeats_vec;
 
 use itertools::Itertools;
 
@@ -26,25 +26,13 @@ fn compare_letters(combo: &[Vec<u8>]) -> Option<String> {
     }
 }
 
-fn check_for_repeats(input: &str) -> (bool, bool) {
-    let mut counts: HashMap<char, u8> = HashMap::new();
-    input
-        .chars()
-        .for_each(|c| *counts.entry(c).or_insert(0) += 1);
-
-    (
-        counts.values().any(|&c| c == 2),
-        counts.values().any(|&c| c == 3),
-    )
-}
-
 pub fn part_one(input: &str) -> Option<u64> {
     let mut counts_2 = 0;
     let mut counts_3 = 0;
 
     input
         .lines()
-        .map(check_for_repeats)
+        .map(check_for_repeats_vec)
         .for_each(|(twos, threes)| {
             if twos {
                 counts_2 += 1
