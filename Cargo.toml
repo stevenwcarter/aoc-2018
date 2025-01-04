@@ -10,6 +10,10 @@ publish = false
 [lib]
 doctest = false
 
+[profile.release]
+codegen-units = 1
+lto = "fat"
+
 [profile.dhat]
 inherits = "release"
 debug = 1

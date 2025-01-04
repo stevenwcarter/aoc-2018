@@ -10,3 +10,5 @@ time = "run --quiet --release -- time"
 
 [env]
 AOC_YEAR = "2018"
+[build]
+rustflags = ["-Ctarget-cpu=native"]

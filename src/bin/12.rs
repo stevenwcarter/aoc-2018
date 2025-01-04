@@ -36,24 +36,6 @@ fn next_generation(plants: &HashMap<i64, bool>, rules: &HashSet<u8>) -> HashMap<
     result
 }
 
-fn print_plants(step: u8, plants: &HashMap<i64, bool>) {
-    let start = -3;
-    let end = 36;
-
-    let mut result: String = String::new();
-    result.push_str(&format!("{:2>}: ", step));
-
-    (start..end).for_each(|pos| {
-        let ch = match plants.get(&pos) {
-            Some(true) => '#',
-            _ => '.',
-        };
-        result.push(ch);
-    });
-
-    println!("{result}");
-}
-
 pub fn part_one(input: &str) -> Option<i64> {
     let input: Vec<&str> = input.lines().collect();
     let mut rules: HashSet<u8> = HashSet::new();
@@ -73,19 +55,11 @@ pub fn part_one(input: &str) -> Option<i64> {
             _ => unreachable!("Invalid input {ch}"),
         };
     });
-    // print_plants(0, &plants);
-    (0..20).for_each(|s| {
+    (0..20).for_each(|_| {
         plants = next_generation(&plants, &rules);
-        // print_plants(s + 1, &plants);
     });
 
-    Some(
-        plants
-            .iter()
-            .filter(|(_, v)| **v)
-            .map(|(&k, _)| k as i64)
-            .sum(),
-    )
+    Some(plants.iter().filter(|(_, v)| **v).map(|(&k, _)| k).sum())
 }
 
 pub fn part_two(input: &str) -> Option<i64> {
