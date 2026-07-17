@@ -1,7 +1,5 @@
 use std::collections::VecDeque;
 
-use hashbrown::HashMap;
-
 use itertools::Itertools;
 
 advent_of_code::solution!(9);
@@ -19,7 +17,8 @@ pub struct Game {
     pub next_marble: u32,
     pub marbles: VecDeque<u32>,
     pub last_marble: u32,
-    pub scores: HashMap<u32, u32>,
+    pub scores: Vec<u32>,
+    pub until_23: u32,
 }
 
 impl Game {
@@ -33,21 +32,23 @@ impl Game {
             next_marble: 1,
             marbles,
             last_marble,
-            scores: HashMap::new(),
+            scores: vec![0u32; player_count],
+            until_23: 23,
         }
     }
+
     pub fn add_marble(&mut self) -> bool {
-        if self.next_marble % 23 != 0 {
+        self.until_23 -= 1;
+        if self.until_23 != 0 {
             self.marbles.rotate_left(1);
             self.marbles.push_back(self.next_marble);
         } else {
+            self.until_23 = 23;
             self.marbles.rotate_right(7);
             let removed_marble = self.marbles.pop_back().unwrap();
             self.marbles.rotate_left(1);
-            *self
-                .scores
-                .entry(self.next_marble % self.player_count as u32)
-                .or_insert(0) += self.next_marble + removed_marble;
+            self.scores[(self.next_marble % self.player_count as u32) as usize] +=
+                self.next_marble + removed_marble;
         }
 
         self.next_marble += 1;
@@ -55,7 +56,7 @@ impl Game {
     }
 
     pub fn winning_score(&self) -> u32 {
-        *self.scores.values().max().unwrap()
+        *self.scores.iter().max().unwrap()
     }
 
     pub fn print(&self) {
