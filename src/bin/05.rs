@@ -1,24 +1,37 @@
 use itertools::Itertools;
+use rayon::iter::{IntoParallelIterator, ParallelIterator};
 advent_of_code::solution!(5);
 
-// 32 diff between a and A
-pub fn part_one(input: &str) -> Option<usize> {
-    let mut tuples: Vec<u8> = input
+pub fn extract_chars(input: &str) -> Vec<u8> {
+    input
         .trim()
         .chars()
         .map(|c| u8::try_from(c).unwrap())
-        .collect();
+        .collect()
+}
+
+pub fn reduce(tuples: &[u8], ignore_char: Option<u8>) -> usize {
+    let mut tuples = if let Some(ignore_char) = ignore_char {
+        tuples
+            .iter()
+            .filter(|&&c| c != ignore_char && c != ignore_char + 32)
+            .cloned()
+            .collect()
+    } else {
+        tuples.to_vec()
+    };
     loop {
         let indexes_to_remove: Vec<usize> = tuples
             .iter()
             .tuple_windows()
             .enumerate()
+            // diff between a and A is 32
             .filter(|&(_, (a, b))| a.abs_diff(*b) == 32)
             .map(|(idx, _)| idx)
             .collect();
 
         if indexes_to_remove.is_empty() {
-            return Some(tuples.len());
+            return tuples.len();
         }
         let mut prev: Option<usize> = None;
         indexes_to_remove
@@ -36,8 +49,17 @@ pub fn part_one(input: &str) -> Option<usize> {
     }
 }
 
-pub fn part_two(_input: &str) -> Option<usize> {
-    None
+pub fn part_one(input: &str) -> Option<usize> {
+    let tuples = extract_chars(input);
+    Some(reduce(&tuples, None))
+}
+
+pub fn part_two(input: &str) -> Option<usize> {
+    let tuples = extract_chars(input);
+    (65..65 + 26)
+        .into_par_iter()
+        .map(|i| reduce(&tuples, Some(i)))
+        .min()
 }
 
 #[cfg(test)]
@@ -53,6 +75,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(4));
     }
 }

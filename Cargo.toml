@@ -24,6 +24,8 @@ today = ["chrono"]
 test_lib = []
 
 [dependencies]
+anyhow = "1.0.103"
+aoc-mine = { git = "https://github.com/stevenwcarter/aoc-mine", version = "0.1.0" }
 cached = "0.54.0"
 
 # Template dependencies
