@@ -9,7 +9,7 @@ pub fn part_one(input: &str) -> Option<usize> {
         .map(|c| u8::try_from(c).unwrap())
         .collect();
     loop {
-        let mut indexes_to_remove: Vec<usize> = tuples
+        let indexes_to_remove: Vec<usize> = tuples
             .iter()
             .tuple_windows()
             .enumerate()
@@ -21,15 +21,13 @@ pub fn part_one(input: &str) -> Option<usize> {
             return Some(tuples.len());
         }
         let mut prev: Option<usize> = None;
-        indexes_to_remove.retain(|&x| {
-            let drop = prev.is_some_and(|p| x == p.wrapping_add(1));
-
-            prev = Some(x);
-
-            !drop
-        });
         indexes_to_remove
             .iter()
+            .filter(|&&x| {
+                let drop = prev.is_some_and(|p| x == p.wrapping_add(1));
+                prev = Some(x);
+                !drop
+            })
             .enumerate()
             .for_each(|(count, &i)| {
                 let i = i - count * 2;
@@ -38,7 +36,7 @@ pub fn part_one(input: &str) -> Option<usize> {
     }
 }
 
-pub fn part_two(input: &str) -> Option<usize> {
+pub fn part_two(_input: &str) -> Option<usize> {
     None
 }
 
